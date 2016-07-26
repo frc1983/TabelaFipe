@@ -14,7 +14,7 @@ export class FipeService {
 
     constructor(private http: Http, private _baseService: BaseService) {
         let headers = new Headers();
-        headers.append('Access-Control-Allow-Origin', 'http://veiculos.fipe.org.br');
+        //headers.append('Access-Control-Allow-Origin', 'http://veiculos.fipe.org.br');
         headers.append('Content-Type', 'application/json');
         this.options = new RequestOptions({ headers: headers });
     }

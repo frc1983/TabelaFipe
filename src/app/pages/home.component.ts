@@ -61,6 +61,7 @@ export class HomeComponent {
 
 	carregarVeiculos() {
 		this.indexTipoVeiculo = 1;
+		this.indexMarcaConsulta = 0;
 		this.errorMessage = "";
 
 		if (this.arrayMarcas[0].length == 0 && this.arrayMarcas[1].length == 0 && this.arrayMarcas[2].length == 0) {
@@ -85,7 +86,8 @@ export class HomeComponent {
 				err => {
 					this.onError("Erro ao obter marcas")
 				});
-		}
+		} else
+			this.exibeResultadosDadosBasicos();
     }
 
     getAllModelos(lista: Array<Marca>) {
@@ -131,8 +133,7 @@ export class HomeComponent {
 	getAllVeiculos(lista: Array<Marca>) {
 		this.loading = true;
 		let observableBatch = [];
-		//this.arrayListas[this.indexTipoVeiculo - 1] = [];
-		//lista.forEach(marca => {
+
 		lista[this.indexMarcaConsulta].modelos.forEach(modelo => {
 			modelo.anos.forEach(ano => {
 				observableBatch.push(this.getVeiculos(
@@ -142,27 +143,29 @@ export class HomeComponent {
 					ano.id))
 			});
 		});
-		//})
 
         Observable.forkJoin(
 			observableBatch
 		).subscribe(
 			veiculo => {
-				this.getStatus(["Anos obtidos para os modelos", "Carregando dados dos veículos"])
-				if (this.arrayMarcas.length > this.indexTipoVeiculo - 1 && lista.length == this.indexMarcaConsulta + 1) {
+				this.getStatus(["Obtendo veículos", "Marca: " + lista[this.indexMarcaConsulta].nome])
+				if (this.arrayMarcas.length >= this.indexTipoVeiculo && lista.length - 1 == this.indexMarcaConsulta + 1)
 					this.indexTipoVeiculo++;
+
+				if (this.arrayMarcas.length > this.indexTipoVeiculo - 1 && lista.length - 1 == this.indexMarcaConsulta + 1) {
 					this.indexMarcaConsulta = 0;
 					this.getAllVeiculos(this.arrayMarcas[this.indexTipoVeiculo - 1]);
 				}
 				else if (this.arrayMarcas.length > this.indexTipoVeiculo - 1 && lista.length - 1 > this.indexMarcaConsulta) {
 					this.indexMarcaConsulta++;
 					this.getAllVeiculos(this.arrayMarcas[this.indexTipoVeiculo - 1]);
-				} else
+				} else {
 					this.loading = false;
-
+					this.exibeResultadosVeiculos();
+				}
 			},
 			err => {
-				this.onError("Erro ao obter anos dos modelos")
+				this.onError("Erro ao obter veículos")
 			});
 	}
 
@@ -228,6 +231,37 @@ export class HomeComponent {
 					reject(null)
 				});
 		});
+	}
+
+	exibeResultadosVeiculos() {
+		console.log("Lista de veículos:", this.arrayLista);
+	}
+
+	exibeResultadosDadosBasicos() {
+		console.log("Total de marcas:", this.arrayMarcas[0].length + this.arrayMarcas[1].length + this.arrayMarcas[2].length);
+
+		let countModelos = 0;
+		let countAnos = 0;
+		this.arrayMarcas[0].forEach((marca) => {
+			countModelos += marca.modelos.length;
+			marca.modelos.forEach(modelo => {
+				countAnos += modelo.anos.length;
+			});
+		});
+		this.arrayMarcas[1].forEach((marca) => {
+			countModelos += marca.modelos.length;
+			marca.modelos.forEach(modelo => {
+				countAnos += modelo.anos.length;
+			});
+		});
+		this.arrayMarcas[2].forEach((marca) => {
+			countModelos += marca.modelos.length;
+			marca.modelos.forEach(modelo => {
+				countAnos += modelo.anos.length;
+			});
+		});
+		console.log("Total de modelos:", countModelos);
+		console.log("Total de anos:", countAnos);
 	}
 
 	onError(msg: string) {

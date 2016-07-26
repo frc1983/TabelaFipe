@@ -1,15 +1,15 @@
 export class Veiculo {
-    valor: string;
-	marca: string;
-	modelo: string;
-	anoModelo: number;
-	combustivel: string;
-	codigoFipe: string;
-	mesReferencia: string;
-    tipoVeiculo: number;
-  
+  valor: number;
+  marca: string;
+  modelo: string;
+  anoModelo: number;
+  combustivel: string;
+  codigoFipe: string;
+  mesReferencia: string;
+  tipoVeiculo: number;
+
   constructor(obj: any) {
-    this.valor = obj.Valor;
+    this.valor = parseFloat(obj.Valor.replace("R$ ", ""));
     this.marca = obj.Marca;
     this.modelo = obj.Modelo;
     this.anoModelo = obj.AnoModelo;
@@ -18,7 +18,7 @@ export class Veiculo {
     this.mesReferencia = obj.MesReferencia;
     this.tipoVeiculo = obj.TipoVeiculo;
   }
-  
+
   static fromJSONArray(array: Array<Veiculo>): Veiculo[] {
     return array.map(obj => new Veiculo(obj));
   }

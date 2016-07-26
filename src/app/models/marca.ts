@@ -2,12 +2,12 @@ import { Modelo } from './modelo';
 
 export class Marca {
   id: number;
-  //nome: string;
+  nome: string;
   modelos: Array<Modelo>;  
   
   constructor(obj: any) {
     this.id = obj.Value;
-    //this.nome = obj.Label;
+    this.nome = obj.Label;
     this.modelos = new Array();
   }
   
